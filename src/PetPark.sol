@@ -23,7 +23,7 @@ contract PetPark is Ownable {
 
     mapping(address => uint8) public borrowedType;
 
-    event Add(AnimalType typeOfAnimal, uint256 countOfAnimals);
+    event Added(AnimalType typeOfAnimal, uint256 countOfAnimals);
     event Borrowed(AnimalType typeOfAnimal, address Borrower);
     event Returned(uint8 typeOfAnimal);
 
@@ -38,7 +38,7 @@ contract PetPark is Ownable {
         totalAnimalCount += _count;
 
         // emits animal type and total count of that animal type
-        emit Add(_animalType, animalCount[id]); 
+        emit Added(_animalType, animalCount[id]); 
     }
 
     function getType(AnimalType _aType) public pure returns (uint8) {
