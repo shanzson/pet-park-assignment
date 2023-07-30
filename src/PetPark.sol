@@ -39,6 +39,7 @@ contract PetPark is Ownable {
     // Gives shelter to animals
     function add(AnimalType _animalType, uint256 _count) public onlyOwner{
         uint8 id = getType(_animalType);
+        require(id < 5, "Invalid animal");
 
         animalCount[id] += _count;
         totalAnimalCount += _count;
@@ -55,8 +56,8 @@ contract PetPark is Ownable {
         require( !borrowedBefore[msg.sender], "Already adopted a pet"); 
         require(_age > 0, "Invalid Age");
         uint8 id = getType(_animalType);
-        require(animalCount[id] != 0, "Selected animal not available");
         require(id < 5, "Invalid animal type");
+        require(animalCount[id] != 0, "Selected animal not available");
 
         if(gender == Gender.Male){
             require(id == 0 || id == 2, "Invalid animal for men");
@@ -78,7 +79,7 @@ contract PetPark is Ownable {
     }
 
     function giveBackAnimal() public {
-        require(borrowedBefore[msg.sender], "Should have borrowed before"); 
+        require(borrowedBefore[msg.sender], "No borrowed pets"); 
         uint8 id = borrowedType[msg.sender];
 
         borrowedBefore[msg.sender] = false;

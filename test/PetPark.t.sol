@@ -142,6 +142,15 @@ contract PetParkTest is Test, PetPark {
 
     function testBorrowCountDecrement() public {
         // 3. Complete this test and remove the assert line below
+        petPark.add(AnimalType.Fish, 5);
+        
+        address bob = address(0x1);
+
+        // Pranking Bob who is non-owner
+        vm.startPrank(bob);
+
+        petPark.borrow(14, Gender.Male, AnimalType.Fish);
+        assertEq(petPark.animalCounts(AnimalType.Fish), 4);
     }
 
     function testCannotGiveBack() public {
