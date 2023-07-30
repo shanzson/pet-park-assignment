@@ -27,7 +27,13 @@ contract PetParkTest is Test, PetPark {
 
     function testCannotAddAnimalWhenNonOwner() public {
         // 1. Complete this test and remove the assert line below
-        assert(false);
+    
+        address bob = address(0x1);
+
+        // Pranking Bob who is non-owner
+        vm.startPrank(bob);
+        vm.expectRevert("Ownable: caller is not the owner");
+        petPark.add(AnimalType.Dog, 20);
     }
 
     function testCannotAddInvalidAnimal() public {
@@ -44,7 +50,15 @@ contract PetParkTest is Test, PetPark {
 
     function testCannotBorrowWhenAgeZero() public {
         // 2. Complete this test and remove the assert line below
-        assert(false);
+        petPark.add(AnimalType.Fish, 5);
+        
+        address bob = address(0x1);
+
+        // Pranking Bob who is non-owner
+        vm.startPrank(bob);
+
+        vm.expectRevert("Invalid Age");
+        petPark.borrow(0, Gender.Male, AnimalType.Fish);
     }
 
     function testCannotBorrowUnavailableAnimal() public {
@@ -128,7 +142,6 @@ contract PetParkTest is Test, PetPark {
 
     function testBorrowCountDecrement() public {
         // 3. Complete this test and remove the assert line below
-        assert(false);
     }
 
     function testCannotGiveBack() public {

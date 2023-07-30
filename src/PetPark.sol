@@ -10,7 +10,13 @@ contract PetPark is Ownable {
         Cat,    // 1
         Dog,    // 2
         Rabbit, // 3
-        Parrot  // 4
+        Parrot, // 4
+        None    // 5
+    }
+
+    enum Gender {
+        Male,   // 0
+        Female    // 1
     }
 
     // Total count of Animals    
@@ -24,7 +30,7 @@ contract PetPark is Ownable {
     mapping(address => uint8) public borrowedType;
 
     event Added(AnimalType typeOfAnimal, uint256 countOfAnimals);
-    event Borrowed(AnimalType typeOfAnimal, address Borrower);
+    event Borrowed(AnimalType typeOfAnimal);
     event Returned(uint8 typeOfAnimal);
 
     constructor(){
@@ -45,17 +51,19 @@ contract PetPark is Ownable {
         return uint8(_aType);
     }
 
-    function borrow(uint8 _age, bool gender, AnimalType _animalType) public {
-        require( !borrowedBefore[msg.sender] , "Should not have borrowed before"); 
+    function borrow(uint8 _age, Gender gender, AnimalType _animalType) public {
+        require( !borrowedBefore[msg.sender], "Already adopted a pet"); 
+        require(_age > 0, "Invalid Age");
         uint8 id = getType(_animalType);
-        
-        // gender as true represents male
-        if(gender){
-            require(id == 0 || id == 2, "Men can borrow only Fish and Dog");
+        require(animalCount[id] != 0, "Selected animal not available");
+        require(id < 5, "Invalid animal type");
+
+        if(gender == Gender.Male){
+            require(id == 0 || id == 2, "Invalid animal for men");
         }
         else{
             if(_age < 40) {
-                require(id != 1, "Women under 40 are not allowed to borrow Cat");
+                require(id != 1, "Invalid animal for women under 40");
             }
         }
 
@@ -65,7 +73,7 @@ contract PetPark is Ownable {
         borrowedBefore[msg.sender] = true;
         borrowedType[msg.sender] = id;
 
-        emit Borrowed(_animalType, msg.sender);
+        emit Borrowed(_animalType);
 
     }
 
@@ -79,6 +87,10 @@ contract PetPark is Ownable {
 
         delete borrowedType[msg.sender];
         emit Returned(id);
+    }
+
+    function animalCounts(AnimalType animalType) public view returns (uint256){
+        return animalCount[uint8(animalType)];
     }
 
 }
