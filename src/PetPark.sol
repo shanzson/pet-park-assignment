@@ -21,8 +21,11 @@ contract PetPark is Ownable {
 
     mapping(address => bool) public borrowedBefore;
 
+    mapping(address => uint8) public borrowedType;
+
     event Add(AnimalType typeOfAnimal, uint256 countOfAnimals);
     event Borrowed(AnimalType typeOfAnimal, address Borrower);
+    event Returned(uint8 typeOfAnimal);
 
     constructor(){
     }
@@ -60,9 +63,22 @@ contract PetPark is Ownable {
         totalAnimalCount -= 1;
 
         borrowedBefore[msg.sender] = true;
+        borrowedType[msg.sender] = id;
 
         emit Borrowed(_animalType, msg.sender);
 
+    }
+
+    function giveBackAnimal() public {
+        require(borrowedBefore[msg.sender], "Should have borrowed before"); 
+        uint8 id = borrowedType[msg.sender];
+
+        borrowedBefore[msg.sender] = false;
+        animalCount[id] += 1;
+        totalAnimalCount += 1;
+
+        delete borrowedType[msg.sender];
+        emit Returned(id);
     }
 
 }
