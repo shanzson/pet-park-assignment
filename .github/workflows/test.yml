@@ -29,6 +29,7 @@ jobs:
           forge --version
           forge install foundry-rs/forge-std --no-commit
           forge build --sizes
+          npm install
         id: build
 
       - name: Run Forge tests
